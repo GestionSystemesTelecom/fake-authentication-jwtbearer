@@ -76,7 +76,7 @@ namespace GST.Fake.Authentication.JwtBearer
         }
 
         /// <summary>
-        /// Set Raw Tocken
+        /// Set Raw Token
         /// </summary>
         /// <param name="client"></param>
         /// <param name="scheme"></param>
