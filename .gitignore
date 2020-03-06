@@ -7,3 +7,4 @@
 Coverage.xml
 nupkgs/
 **/project.lock.json
+.idea

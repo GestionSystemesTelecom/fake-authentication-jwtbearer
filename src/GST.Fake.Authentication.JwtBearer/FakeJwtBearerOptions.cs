@@ -80,5 +80,15 @@ namespace GST.Fake.Builder
         /// from returning an error and an error_description in the WWW-Authenticate header.
         /// </summary>
         public bool IncludeErrorDetails { get; set; } = true;
+
+        /// <summary>
+        /// This property allows overriding of the NameClaimType that is set on the ClaimsPrinciple.
+        /// </summary>
+        public string NameClaimType { get; set; } = "name";
+
+        /// <summary>
+        /// This property allows overriding of the RoleClaimType that is set on the ClaimsPrinciple.
+        /// </summary>
+        public string RoleClaimType { get; set; } = "role";
     }
 }

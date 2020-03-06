@@ -87,7 +87,7 @@ namespace GST.Fake.Authentication.JwtBearer
 
                 Dictionary<string, dynamic> tokenDecoded = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(token);
 
-                ClaimsIdentity id = new ClaimsIdentity("Identity.Application", "name", "role");
+                ClaimsIdentity id = new ClaimsIdentity("Identity.Application", Options.NameClaimType, Options.RoleClaimType);
 
                 foreach (var td in tokenDecoded)
                 {

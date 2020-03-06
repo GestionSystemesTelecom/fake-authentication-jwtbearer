@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using Microsoft.AspNetCore.Authentication;
 using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using GST.Fake.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -193,6 +194,40 @@ namespace GST.Fake.Authentication.JwtBearer.Tests
             var response = await SendAsync(client, "http://example.com/oauth");
             Assert.Equal(HttpStatusCode.OK, response.Response.StatusCode);
             Assert.Equal("Earl Becker", response.ResponseText);
+        }
+
+        /// <summary>
+        /// Test to ensure that Claim Types can be customised.
+        /// https://github.com/GestionSystemesTelecom/fake-authentication-jwtbearer/issues/4
+        /// </summary>
+        [Fact]
+        public async Task MustFixIssue4()
+        {
+            var server = CreateServer(o =>
+            {
+                o.NameClaimType = "someNameClaimType";
+                o.RoleClaimType = "someRoleClaimType";
+                o.Events = new JwtBearerEvents()
+                {
+                    OnTokenValidated = context =>
+                    {
+                        Assert.Equal("someNameClaimType", context.Principal.Identities.First().NameClaimType);
+                        Assert.Equal("someRoleClaimType", context.Principal.Identities.First().RoleClaimType);
+                        Assert.True(context.Principal.IsInRole("admin"));
+                        return Task.FromResult<object>(null);
+                    }
+                };
+            });
+            
+            var client = server.CreateClient().SetFakeBearerToken(new
+            {
+                sub = "1",
+                someNameClaimType = "joe bloggs",
+                someRoleClaimType = new List<string> {"admin"},
+            });
+            var response = await SendAsync(client, "http://example.com/oauth");
+            
+            Assert.Equal(HttpStatusCode.OK, response.Response.StatusCode);
         }
 
         private static TestServer CreateServer(Action<FakeJwtBearerOptions> options = null, Func<HttpContext, Func<Task>, Task> handlerBeforeAuth = null)
