@@ -11,6 +11,8 @@ This code is based on [Microsoft.AspNetCore.Authentication.JwtBearer](https://gi
 
  > If You need it for ASP.NET Core 2.1, check [Tag 2.1.2](https://github.com/GestionSystemesTelecom/fake-authentication-jwtbearer/tree/1.0.4)
 
+ > If You need it for ASP.NET Core 3.1, check [Tag 3.0.0](https://github.com/GestionSystemesTelecom/fake-authentication-jwtbearer/tree/3.0.0)
+
 ## How to install it?
 
 First add this package to your Nuget configuration file : [GST.Fake.Authentication.JwtBearer](https://www.nuget.org/packages/GST.Fake.Authentication.JwtBearer).
