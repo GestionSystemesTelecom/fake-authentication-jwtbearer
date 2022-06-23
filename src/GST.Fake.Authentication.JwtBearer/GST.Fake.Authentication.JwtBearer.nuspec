@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+	<metadata>
+		<id>GST.Fake.Authentication.JwtBearer</id>
+		<title>GST.Fake.Authentication.JwtBearer</title>
+		<version>6.0.0</version>
+		<description>
+			This code allow to fake a Jwt Bearer and build integration test for ASP.Net Core application.
+			By this way we can fake any authentication we need, without the need to really authenticate a
+		</description>
+		<authors>Gestion Systèmes Télécom (GST)</authors>
+		<copyright>Gestion Systèmes Télécom (GST)</copyright>
+		<projectUrl>https://github.com/GestionSystemesTelecom/fake-authentication-jwtbearer</projectUrl>
+		<license type="expression">MIT</license>
+		<readme>README.md</readme>
+		<icon>images\icon.png</icon>
+		<repository type="git" url="https://github.com/GestionSystemesTelecom/fake-authentication-jwtbearer" branch="master" />
+	</metadata>
+	<files>
+		<file src="../../icon.png" target="" />
+		<file src="../../README.md" target="" />
+	</files>
+</package>
