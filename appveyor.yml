@@ -1,4 +1,4 @@
-image: Visual Studio 2019
+image: Visual Studio 2022
 init:
   - git config --global core.autocrlf true
 install:
@@ -10,4 +10,4 @@ build_script:
 before_build:
 - appveyor-retry dotnet restore -v Minimal
 test_script:
-- dotnet test -f netcoreapp3.1 -c Test ./test/GST.Fake.Authentication.JwtBearer.Tests/GST.Fake.Authentication.JwtBearer.Tests.csproj
+- dotnet test -f net6.0 -c Test ./test/GST.Fake.Authentication.JwtBearer.Tests/GST.Fake.Authentication.JwtBearer.Tests.csproj

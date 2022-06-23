@@ -1,4 +1,4 @@
-# Fake Authentication Jwt Bearer for ASP.NET Core 2
+# Fake Authentication Jwt Bearer for .NET 6
 
 [![Build status](https://ci.appveyor.com/api/projects/status/csd3288fo1srkqev/branch/master?svg=true)](https://ci.appveyor.com/project/waldo2188/fake-authentication-jwtbearer/branch/master)
 
@@ -129,7 +129,7 @@ I've defined tree methods :
 # Create Nuget Package
 
 ```bash
-dotnet build src/GST.Fake.Authentication.JwtBearer/GST.Fake.Authentication.JwtBearer.csproj --configuration Release --framework netcoreapp3.1 --force
+dotnet build src/GST.Fake.Authentication.JwtBearer/GST.Fake.Authentication.JwtBearer.csproj --configuration Release --framework net6.0 --force
 dotnet pack src/GST.Fake.Authentication.JwtBearer/GST.Fake.Authentication.JwtBearer.csproj --configuration Release --include-source --include-symbols --output ../../nupkgs
 dotnet nuget push src/GST.Fake.Authentication.JwtBearer/bin/Release/GST.Fake.Authentication.JwtBearer.[VERSION].nupkg -s https://api.nuget.org/v3/index.json -k [API-KEY]
 ```
