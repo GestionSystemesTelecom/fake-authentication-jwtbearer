@@ -13,6 +13,8 @@ This code is based on [Microsoft.AspNetCore.Authentication.JwtBearer](https://gi
 
  > If You need it for ASP.NET Core 3.1, check [Tag 3.0.0](https://github.com/GestionSystemesTelecom/fake-authentication-jwtbearer/tree/3.0.0)
 
+ > If You need it for ASP.NET Core 6.0, check [Tag 6.0.0](https://github.com/GestionSystemesTelecom/fake-authentication-jwtbearer/tree/6.0.0)
+
 ## How to install it?
 
 First add this package to your Nuget configuration file : [GST.Fake.Authentication.JwtBearer](https://www.nuget.org/packages/GST.Fake.Authentication.JwtBearer).
@@ -129,7 +131,7 @@ I've defined tree methods :
 # Create Nuget Package
 
 ```bash
-dotnet build src/GST.Fake.Authentication.JwtBearer/GST.Fake.Authentication.JwtBearer.csproj --configuration Release --framework net6.0 --force
+dotnet build src/GST.Fake.Authentication.JwtBearer/GST.Fake.Authentication.JwtBearer.csproj --configuration Release --framework net7.0 --force
 dotnet pack src/GST.Fake.Authentication.JwtBearer/GST.Fake.Authentication.JwtBearer.csproj --configuration Release --include-source --include-symbols --output ../../nupkgs
 dotnet nuget push src/GST.Fake.Authentication.JwtBearer/bin/Release/GST.Fake.Authentication.JwtBearer.[VERSION].nupkg -s https://api.nuget.org/v3/index.json -k [API-KEY]
 ```
