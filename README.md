@@ -1,4 +1,4 @@
-# Fake Authentication Jwt Bearer for .NET 6
+# Fake Authentication Jwt Bearer for .NET 7
 
 [![Build status](https://ci.appveyor.com/api/projects/status/csd3288fo1srkqev/branch/master?svg=true)](https://ci.appveyor.com/project/waldo2188/fake-authentication-jwtbearer/branch/master)
 

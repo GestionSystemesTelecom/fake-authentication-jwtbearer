@@ -15,6 +15,10 @@ using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
+using GST.Fake.Authentication.JwtBearer.Core;
+using System.IdentityModel.Tokens.Jwt;
+using static System.Net.Mime.MediaTypeNames;
+using System.Security.Cryptography;
 
 namespace GST.Fake.Authentication.JwtBearer
 {
@@ -48,10 +52,11 @@ namespace GST.Fake.Authentication.JwtBearer
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             string token = null;
+            string JWTToken = null;
             try
             {
                 // Give application opportunity to find from a different location, adjust, or reject token
-                var messageReceivedContext = new MessageReceivedContext(Context, Scheme, Options);
+                MessageReceivedContext messageReceivedContext = new MessageReceivedContext(Context, Scheme, Options);
 
                 // event can set the token
                 await Events.MessageReceived(messageReceivedContext);
@@ -73,9 +78,20 @@ namespace GST.Fake.Authentication.JwtBearer
                         return AuthenticateResult.NoResult();
                     }
 
-                    if (authorization.StartsWith("FakeBearer ", StringComparison.OrdinalIgnoreCase))
+                    if (authorization.StartsWith(Constant.SCHEME_NAME + " ", StringComparison.OrdinalIgnoreCase))
                     {
-                        token = authorization.Substring("FakeBearer ".Length).Trim();
+                        token = authorization.Substring((Constant.SCHEME_NAME + " ").Length).Trim();
+
+                        string header = "{\"alg\": \"HS256\",\"typ\": \"JWT\"}";
+                        string headerB64 = Base64UrlEncode(GetBytes(header));
+
+                        string payloadB64 = Base64UrlEncode(GetBytes(token));
+
+                        byte[] bytesToSign = GetBytes(string.Join(".", headerB64, payloadB64));
+
+                        string computedSignature = Base64UrlEncode(new HMACSHA256(GetBytes("secret")).ComputeHash(bytesToSign));
+
+                        JWTToken = string.Join(".", headerB64, payloadB64, computedSignature);
                     }
 
                     // If no token found, no further work possible
@@ -89,7 +105,7 @@ namespace GST.Fake.Authentication.JwtBearer
 
                 ClaimsIdentity id = new ClaimsIdentity("Identity.Application", "name", "role");
 
-                foreach (var td in tokenDecoded)
+                foreach (KeyValuePair<string, dynamic> td in tokenDecoded)
                 {
                     if (td.Key == "sub")
                     {
@@ -121,7 +137,7 @@ namespace GST.Fake.Authentication.JwtBearer
 
                 ClaimsPrincipal principal = new ClaimsPrincipal(id);
 
-                var tokenValidatedContext = new TokenValidatedContext(Context, Scheme, Options)
+                TokenValidatedContext tokenValidatedContext = new TokenValidatedContext(Context, Scheme, Options)
                 {
                     Principal = principal
                 };
@@ -136,7 +152,7 @@ namespace GST.Fake.Authentication.JwtBearer
                 {
                     tokenValidatedContext.Properties.StoreTokens(new[]
                     {
-                        new AuthenticationToken { Name = "access_token", Value = token }
+                        new AuthenticationToken { Name = "access_token", Value = JWTToken }
                     });
                 }
 
@@ -145,7 +161,7 @@ namespace GST.Fake.Authentication.JwtBearer
             }
             catch (Exception ex)
             {
-                var authenticationFailedContext = new AuthenticationFailedContext(Context, Scheme, Options)
+                AuthenticationFailedContext authenticationFailedContext = new AuthenticationFailedContext(Context, Scheme, Options)
                 {
                     Exception = ex
                 };
@@ -162,8 +178,8 @@ namespace GST.Fake.Authentication.JwtBearer
 
         protected override async Task HandleChallengeAsync(Microsoft.AspNetCore.Authentication.AuthenticationProperties properties)
         {
-            var authResult = await HandleAuthenticateOnceSafeAsync();
-            var eventContext = new JwtBearerChallengeContext(Context, Scheme, Options, properties)
+            AuthenticateResult authResult = await HandleAuthenticateOnceSafeAsync();
+            JwtBearerChallengeContext eventContext = new JwtBearerChallengeContext(Context, Scheme, Options, properties)
             {
                 AuthenticateFailure = authResult?.Failure
             };
@@ -186,7 +202,7 @@ namespace GST.Fake.Authentication.JwtBearer
             {
                 // https://tools.ietf.org/html/rfc6750#section-3.1
                 // WWW-Authenticate: Bearer realm="example", error="invalid_token", error_description="The access token expired"
-                var builder = new StringBuilder(Options.Challenge);
+                StringBuilder builder = new StringBuilder(Options.Challenge);
                 if (Options.Challenge.IndexOf(" ", StringComparison.Ordinal) > 0)
                 {
                     // Only add a comma after the first param, if any
@@ -225,6 +241,28 @@ namespace GST.Fake.Authentication.JwtBearer
                 Response.Headers.Append(HeaderNames.WWWAuthenticate, builder.ToString());
             }
         }
+        /// <summary>
+        /// https://stackoverflow.com/questions/38725038/c-sharp-how-to-verify-signature-on-jwt-token
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private static byte[] GetBytes(string value)
+        {
+            return Encoding.UTF8.GetBytes(value);
+        }
 
+        /// <summary>
+        /// from JWT spec
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        private static string Base64UrlEncode(byte[] input)
+        {
+            string output = Convert.ToBase64String(input);
+            output = output.Split('=')[0]; // Remove any trailing '='s
+            output = output.Replace('+', '-'); // 62nd char of encoding
+            output = output.Replace('/', '_'); // 63rd char of encoding
+            return output;
+        }
     }
 }

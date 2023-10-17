@@ -1,3 +1,4 @@
+using GST.Fake.Authentication.JwtBearer.Core;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -17,7 +18,7 @@ namespace GST.Fake.Authentication.JwtBearer
         /// <returns></returns>
         public static HttpClient SetFakeBearerToken(this HttpClient client, object token)
         {
-            client.SetToken("FakeBearer", JsonConvert.SerializeObject(token));
+            client.SetToken(Constant.SCHEME_NAME, JsonConvert.SerializeObject(token));
 
             return client;
         }

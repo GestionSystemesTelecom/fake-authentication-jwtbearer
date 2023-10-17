@@ -1,6 +1,4 @@
 using System;
-using GST.Fake.Authentication.JwtBearer;
-using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Builder;
 
 namespace GST.Fake.Builder
