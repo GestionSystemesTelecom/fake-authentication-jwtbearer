@@ -16,8 +16,6 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 using GST.Fake.Authentication.JwtBearer.Core;
-using System.IdentityModel.Tokens.Jwt;
-using static System.Net.Mime.MediaTypeNames;
 using System.Security.Cryptography;
 
 namespace GST.Fake.Authentication.JwtBearer
