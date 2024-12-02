@@ -3,7 +3,6 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using GST.Fake.Builder;
 using Microsoft.AspNetCore.Authentication;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Collections;
 using GST.Fake.Authentication.JwtBearer.Events;
@@ -11,21 +10,20 @@ using System.Linq;
 using System.Text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Net.Http.Headers;
-using System.Text.Encodings.Web;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Logging;
 using GST.Fake.Authentication.JwtBearer.Core;
 using System.Security.Cryptography;
+using System.Text.Json;
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
+using System.Text.Encodings.Web;
 
 namespace GST.Fake.Authentication.JwtBearer
 {
     internal class FakeJwtBearerHandler : AuthenticationHandler<FakeJwtBearerOptions>
     {
-        public FakeJwtBearerHandler(IOptionsMonitor<FakeJwtBearerOptions> options, ILoggerFactory logger, UrlEncoder encoder, IDataProtectionProvider dataProtection, ISystemClock clock)
-            : base(options, logger, encoder, clock)
-        { }
-
+        public FakeJwtBearerHandler(IOptionsMonitor<FakeJwtBearerOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
+        {
+        }
 
         /// <summary>
         /// The handler calls methods on the events which give the application control at certain points where processing is occurring. 
@@ -99,7 +97,7 @@ namespace GST.Fake.Authentication.JwtBearer
                     }
                 }
 
-                Dictionary<string, dynamic> tokenDecoded = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(token);
+                Dictionary<string, dynamic> tokenDecoded = JsonSerializer.Deserialize<Dictionary<string, dynamic>>(token);
 
                 ClaimsIdentity id = new ClaimsIdentity("Identity.Application", "name", "role");
 
@@ -115,7 +113,18 @@ namespace GST.Fake.Authentication.JwtBearer
                     }
                     else
                     {
-                        if (td.Value is string)
+                        if (td.Value is JsonElement && td.Value.ValueKind == JsonValueKind.String)
+                        {
+                            id.AddClaim(new Claim(td.Key, td.Value.GetString()));
+                        }
+                        else if (td.Value is JsonElement && td.Value.ValueKind == System.Text.Json.JsonValueKind.Array)
+                        {
+                            foreach (JsonElement subValue in td.Value.EnumerateArray())
+                            {
+                                id.AddClaim(new Claim(td.Key, subValue.GetString()));
+                            }
+                        }
+                        else if(td.Value is string)
                         {
                             id.AddClaim(new Claim(td.Key, td.Value));
                         }

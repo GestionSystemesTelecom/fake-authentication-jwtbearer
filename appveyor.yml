@@ -10,4 +10,4 @@ build_script:
 before_build:
 - appveyor-retry dotnet restore -v Minimal
 test_script:
-- dotnet test -f net7.0 -c Test ./test/GST.Fake.Authentication.JwtBearer.Tests/GST.Fake.Authentication.JwtBearer.Tests.csproj
+- dotnet test -f net9.0 -c Test ./test/GST.Fake.Authentication.JwtBearer.Tests/GST.Fake.Authentication.JwtBearer.Tests.csproj
