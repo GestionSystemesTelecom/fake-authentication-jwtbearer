@@ -21,7 +21,7 @@ namespace GST.Fake.Authentication.JwtBearer
 {
     internal class FakeJwtBearerHandler : AuthenticationHandler<FakeJwtBearerOptions>
     {
-        public FakeJwtBearerHandler(IOptionsMonitor<FakeJwtBearerOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
+        public FakeJwtBearerHandler(IOptionsMonitor<FakeJwtBearerOptions> options, ILoggerFactory logger, UrlEncoder encoder) : base(options, logger, encoder)
         {
         }
 
